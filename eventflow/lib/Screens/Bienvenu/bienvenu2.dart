@@ -19,7 +19,7 @@ class _Bienvenu2State extends State<Bienvenu2> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(height: 90,),
+              SizedBox(height: 10,),
              Container(
             
 

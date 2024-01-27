@@ -11,6 +11,8 @@ import 'package:eventflow/Utils/utils.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter/services.dart';
+
 
 class CreateEvent extends StatefulWidget {
   const CreateEvent({super.key});
@@ -31,6 +33,7 @@ class _CreateEventState extends State<CreateEvent> {
   final TextEditingController priceController = TextEditingController();
   final TextEditingController aboutController = TextEditingController();
   // TextEditingController _picked = TextEditingController();
+  
   late TimeOfDay _timeChosen;
 
 
@@ -101,11 +104,12 @@ class _CreateEventState extends State<CreateEvent> {
       String eventType = _value;
       String location = locationController.text;
       String time = _timeChosen.format(context).toString();
-      String price = priceController.text;
+      // String price = priceController.text;
       String about = aboutController.text;
       String participants = participantsController.text;
       String date = dateController.text;
       String country = countryController.text;
+      int price = int.tryParse(priceController.text) ?? 0;
       // TimeOfDay time = _timeChosen;
     
 
@@ -115,6 +119,7 @@ class _CreateEventState extends State<CreateEvent> {
     // print("Date:  $date");
     //  print("About: $about");
     // print("Price:  $price");
+    print(price.runtimeType);
 
     
     String resp  = await StoreEvent().saveData(name: name, eventType: eventType, file: _imageUrl!, date: date, location: location,time: time, participants: participants, about: about, price: price, country: country);
@@ -346,8 +351,9 @@ var _value = null;
 
                     SizedBox(height: 18.0),
                     TextFormField(
-                      keyboardType: TextInputType.text,
+                      keyboardType: TextInputType.number,
                       controller: priceController,
+                      
                       // decoration: InputDecoration(labelText: "Prix du ticket"),
                       decoration: InputDecoration(
                         border: OutlineInputBorder(

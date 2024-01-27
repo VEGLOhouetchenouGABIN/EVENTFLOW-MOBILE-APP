@@ -1,144 +1,14 @@
-// import 'package:eventflow/Screens/Bienvenu/bienvenu1.dart';
-// import 'package:eventflow/Screens/Bienvenu/bienvenu3.dart';
-// import 'package:eventflow/Screens/organizators/lists.dart';
+
+import 'package:eventflow/Screens/Bienvenu/eventDisplay.dart';
 import 'package:eventflow/Screens/organizators/lists.dart';
+import 'package:eventflow/Services/auth_Service.dart';
 import 'package:eventflow/controller/google_sign_in.dart';
-// import 'package:eventflow/Screens/home.dart';
-// import 'package:eventflow/Screens/login.dart';
-// import 'package:eventflow/Screens/signup.dart';
-// import 'package:flutter/material.dart';
-// import 'package:firebase_core/firebase_core.dart';
-// import 'package:provider/provider.dart';
-// import 'firebase_options.dart';
-// import 'package:eventflow/Screens/Bienvenu/bienvenu2.dart';
-// import 'package:eventflow/Screens/Bienvenu/bienvenu4.dart';
 
+// KKIAPAY
 
-// Future<void> main() async {
-//   WidgetsFlutterBinding.ensureInitialized();
-//   await Firebase.initializeApp(
-//   options: DefaultFirebaseOptions.currentPlatform,
-// );
-//   runApp(const MyApp());
-// }
-
-// class MyApp extends StatelessWidget {
-//   const MyApp({super.key});
-//   @override
-//   Widget build(BuildContext context) {
-//     return ChangeNotifierProvider(
-//       create: (context) => GoogleSignInProvider(),
-//       child:  MaterialApp(
-//         theme: ThemeData(
-
-//           useMaterial3: true,
-//         ),
-//         debugShowCheckedModeBanner: false,
-//         home: const Bienvenu2(),
-//       ),
-//     );
-
-//   }
-//   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import 'package:flutter/material.dart';
-// import 'package:event_flow/widgets/app_logo.dart';
-// import 'package:event_flow/widgets/my_circular_progress.dart';
-// import 'package:event_flow/screens/sign_in.dart';
-// import 'package:event_flow/screens/home_page.dart';
-// import 'package:firebase_core/firebase_core.dart';
-
-// import 'firebase_options.dart';
-
-// void main() async {
-//   WidgetsFlutterBinding.ensureInitialized();
-//   await Firebase.initializeApp(
-//     options: DefaultFirebaseOptions.currentPlatform,
-//   );
-//   runApp(const MyApp());
-// }
-
-// class MyApp extends StatelessWidget {
-//   const MyApp({Key? key}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return const MaterialApp(
-//       home: HomePage(),
-//     );
-//   }
-// }
-
-// class HomePage extends StatefulWidget {
-//   const HomePage({Key? key}) : super(key: key);
-
-//   @override
-//   State<HomePage> createState() => _HomePageState();
-// }
-
-// class _HomePageState extends State<HomePage> {
-//   @override
-//   void initState() {
-//     super.initState();
-//     // Utilisez Future.delayed pour rediriger automatiquement après un certain délai
-//     Future.delayed(const Duration(seconds: 3), () {
-//       Navigator.of(context).pushReplacement(MaterialPageRoute(
-//         builder: (context) => const SignIn(), // Remplacez SignInPage par le nom de votre page de connexion
-//       ));
-//     });
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: SafeArea(
-//         child: Container(
-//           color: Colors.white,
-//           child: const Center(
-//             child: SingleChildScrollView(
-//               child: Column(
-//                 mainAxisAlignment: MainAxisAlignment.center,
-//                 children: <Widget>[
-//                   AppLogo(),
-//                   SizedBox(height: 10),
-//                   Text("EventFlow",
-//                       style:
-//                           TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
-//                   SizedBox(height: 5),
-//                   Text("Vos évenements en un click",
-//                       textAlign: TextAlign.center,
-//                       style: TextStyle(fontSize: 18, color: Colors.grey)),
-//                   SizedBox(height: 20),
-//                   MyCircularProgress()
-//                 ],
-//               ),
-//             ),
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
+import 'package:kkiapay_flutter_sdk/src/widget_builder_view.dart';
+import 'package:kkiapay_flutter_sdk/utils/config.dart';
+import "package:eventflow/Screens/Bienvenu/paymentSuccess.dart";
 
 
 // NEW VERSION
@@ -149,7 +19,7 @@ import 'dart:io';
 import 'package:eventflow/Screens/Bienvenu/createEvenement.dart';
 import 'package:flutter/material.dart';
 // import 'package:eventflow/Screens/deodat/screens/';
-import 'package:eventflow/Screens/deodat/screens/events.dart';
+// import 'package:eventflow/Screens/deodat/screens/events.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:eventflow/widgets/deodat/widgets/notification_provider.dart';
 import 'package:provider/provider.dart';
@@ -204,6 +74,8 @@ void main() async {
 
 
 
+
+
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -224,6 +96,8 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+   final AuthService _authService = AuthService();
+
   // @override
   // void initState() {
   //   super.initState();
@@ -235,11 +109,69 @@ class _SplashScreenState extends State<SplashScreen> {
   //   });
   // }
 
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Utilize Future.delayed to redirect automatically after a certain delay
+    Future.delayed(const Duration(seconds: 5), () {
+      if (_authService.currentUser != null) {
+        // User is already signed in, navigate to the home page
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (context) => const EventScreen(),
+        ));
+      } else {
+        // User is not signed in, show the login page
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (context) => const Bienvenu1(),
+        ));
+      }
+    });
+  }
+
+  
+
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      body: CreateEvent()
+      body: Bienvenu1()
     );
 
   }
 }
+
+
+
+
+
+
+// if (_authService.currentUser != null) {
+//       // User is already signed in, navigate to the home page
+//       return Scaffold(
+//         appBar: AppBar(
+//           title: Text('Home Page'),
+//         ),
+//         body: Center(
+//           child: Text('Welcome, ${_authService.currentUser!.displayName}!'),
+//         ),
+//       );
+//     } else {
+//       // User is not signed in, show the login page
+//       return Scaffold(
+//         appBar: AppBar(
+//           title: Text('Login Page'),
+//         ),
+//         body: Center(
+//           child: ElevatedButton(
+//             onPressed: () async {
+//               // Sign in with Google
+//               await _authService.signInWithGoogle();
+//             },
+//             child: Text('Sign in with Google'),
+//           ),
+//         ),
+//       );
+//     }
+//   }
+// }

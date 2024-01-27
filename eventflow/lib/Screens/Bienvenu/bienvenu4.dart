@@ -1,9 +1,13 @@
+// import 'package:eventflow/Screens/deodat/screens/events.dart';
+
 import 'package:flutter/material.dart';
 import 'package:eventflow/controller/google_sign_in.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 // import 'package:eventflow/Screens/deodat/screens/home_page.dart';
 import 'package:eventflow/Screens/Bienvenu/goToListEvents.dart';
+import 'package:eventflow/Screens/Bienvenu/eventDisplay.dart';
+
 
 
 
@@ -39,7 +43,7 @@ class _Bienvenu4State extends State<Bienvenu4> {
                     Container(
                       child: Column(
                           children: [
-                            SizedBox(height: 20,),
+                            SizedBox(height: 10,),
                             Text("EVENTFLOW",style: TextStyle(color: Colors.yellow, fontSize: 35,fontWeight: FontWeight.bold),),
                             SizedBox(height: 30,),
                             Text("Bienvenue sur EventFlow", style: TextStyle(color: Colors.white,fontSize: 20,fontWeight: FontWeight.bold),),
@@ -60,12 +64,16 @@ class _Bienvenu4State extends State<Bienvenu4> {
                                   final provider = Provider.of<GoogleSignInProvider>(context, listen: false);
                                   provider.googleLogin();
                                   Navigator.of(context).push(
-                                    MaterialPageRoute(builder: (context)=> GoToListEvents())
+                                    MaterialPageRoute(builder: (context)=> EventScreen())
                                   );
+                                  
+                                  // Navigator.of(context).push(
+                                  //   MaterialPageRoute(builder: (context)=> EventScreen())
+                                  // );
                                 },
 
                                 icon: FaIcon(FontAwesomeIcons.google),
-                                label: Text("Connexion avec google", style: TextStyle(color: Colors.white, fontSize: 18)),
+                                label: Text("Voir la liste des évènements", style: TextStyle(color: Colors.white, fontSize: 18)),
                             ),
                             SizedBox(height: 20,),
                           ]),

@@ -1,4 +1,5 @@
 import 'package:eventflow/Screens/Bienvenu/bienvenu4.dart';
+import 'package:eventflow/Screens/Bienvenu/createEvenement.dart';
 import 'package:flutter/material.dart';
 
 class Bienvenu3 extends StatefulWidget {
@@ -18,7 +19,7 @@ class _Bienvenu3State extends State<Bienvenu3> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(height: 90,),
+              SizedBox(height: 10,),
              Container(
 
               child: Image.asset("assets/cuate.png"),
@@ -44,6 +45,18 @@ class _Bienvenu3State extends State<Bienvenu3> {
 
                     }, 
                     child: Center(child: Text("Commencer",style: TextStyle(color: Colors.black),),)
+                    ),
+
+                  ElevatedButton(
+            
+                    onPressed: (){
+
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context)=>CreateEvent())
+                      );
+
+                    }, 
+                    child: Center(child: Text("Créer un évènement",style: TextStyle(color: Colors.black),),)
                     )
                 ]),
               )

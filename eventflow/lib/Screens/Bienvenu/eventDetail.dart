@@ -1,11 +1,15 @@
-import 'package:eventflow/Screens/deodat/screens/PaymentValidation.dart';
-// import 'package:eventflow/Screens/deodat/screens/events.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eventflow/Model/event.dart';
+// import 'package:eventflow/Screens/deodat/screens/PaymentValidation.dart';
+import 'package:eventflow/Screens/Bienvenu/eventDisplay.dart';
+import 'package:eventflow/Screens/Bienvenu/paymentValidation.dart';
+// import 'package:eventflow/Screens/Bienvenu/paymentValidation.dart';
+// import 'package:eventflow/Screens/deodat/screens/events.dart';
 
 import 'package:flutter/material.dart';
 
 class EventDetailsPage extends StatelessWidget {
-  final Event event;
+  final Event  event;
 
   const EventDetailsPage({super.key, required this.event});
 
@@ -32,11 +36,11 @@ class EventDetailsPage extends StatelessWidget {
                 children: [
                   Container(
                     decoration: BoxDecoration(
-                      image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: AssetImage(event.imageUrl),
-                      ),
+                    image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: NetworkImage(event.imageUrl),
                     ),
+                  ),
                   ),
                   Positioned(
                     right: 10,
@@ -151,11 +155,18 @@ class EventDetailsPage extends StatelessWidget {
                           ),
                         ),
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  PaymentValidation(event: event),
+                        //  Navigator.push(
+                        //    context,
+                        //    MaterialPageRoute(
+                        //      builder: (context) =>
+                        //          PaymentValidation(event: event),
+                        //     ),
+                        //   );
+                         Navigator.push(
+                           context,
+                           MaterialPageRoute(
+                             builder: (context) =>
+                                 PaymentValidation(event: event),
                             ),
                           );
                         },
@@ -171,66 +182,4 @@ class EventDetailsPage extends StatelessWidget {
     );
   }
 }
-      /*
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Image.asset(
-                event.imageUrl), // Affichez l'image de l'événement en grand
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    event.name,
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Type d\'événement: ${event.eventType}',
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  Text(
-                    'Date: ${event.date}',
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => TicketQRPage(
-                             event: event,
-                            eventTitle: event.name,
-                            reservationNumber: '123456',
-                          ),
-                        ),
-                      );
-                    },
-                    child: const Text('Valider paiement'),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                        Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const ScanScreen(),
-                        ),
-                      );
-                    },
-                    child: const Text('Scan Qr Code'),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        */
+     

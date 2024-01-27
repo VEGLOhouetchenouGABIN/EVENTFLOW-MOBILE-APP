@@ -58,7 +58,7 @@ Future<String> saveData({
   required String time, 
   required participants, 
   required about, 
-  required String price,
+  required int price,
   required country
   })async{
 

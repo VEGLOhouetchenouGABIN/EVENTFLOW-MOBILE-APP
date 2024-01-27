@@ -51,7 +51,8 @@ dependencies:
   image_picker: ^1.0.7
   firebase_storage: ^11.6.0
   file_picker: ^6.1.1
-  #deodat
+  kkiapay_flutter_sdk: ^1.2.8
+  
 
 
 dev_dependencies:

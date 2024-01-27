@@ -1,8 +1,7 @@
+// import 'package:eventflow/Screens/deodat/screens/scan.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-//import 'package:event_flow/widgets/default_button.dart';
-import 'package:eventflow/Screens/deodat/screens/events.dart';
-import 'package:ticket_widget/ticket_widget.dart';
+import 'package:eventflow/Model/event.dart';
 import 'package:eventflow/widgets/deodat/widgets/ticketcustom.dart';
 
 class TicketQRPage extends StatefulWidget {
@@ -22,151 +21,93 @@ class _TicketQRPageState extends State<TicketQRPage> {
   @override
   void initState() {
     super.initState();
-    // Initialiser les données QR avec l'ID unique de l'événement
+    // Initialize QR data with the unique ID of the event
     qrData = widget.event.id;
   }
 
   @override
   Widget build(BuildContext context) {
-    return CustomTicketWidget(
-      event: widget.event,
-      qrData: qrData,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Ticket QR Page"),
+      ),
+      body:SingleChildScrollView(child:
+       Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextField(
+              controller: qrdataFeed,
+              decoration: const InputDecoration(
+                hintText: "Input your link or data",
+              ),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                if (qrdataFeed.text.isEmpty) {
+                  // A little validation for the text field
+                  setState(() {
+                    qrData = "";
+                  });
+                } else {
+                  setState(() {
+                    qrData = qrdataFeed.text;
+                  });
+                }
+              },
+              child: const Text(
+                "Generate QR",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            // QrImage(
+            //   data: qrData,
+            //   version: QrVersions.auto,
+            //   size: 200.0,
+            // ),
+            Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    QrImageView(
+                      //place where the QR Image will be shown
+                      data: qrData,
+                      version: QrVersions.auto,
+                      size: 200,
+                    ),
+                    const SizedBox(
+                      height: 40.0,
+                    ),
+                    const Text(
+                      "New QR Link Generator",
+                      style: TextStyle(fontSize: 20.0),
+                    ),
+                    TextField(
+                      controller:
+                          TextEditingController(text: qrData),
+                      enabled: false, // Disable editing
+                    ),
+                    SizedBox(height: 15,),
+                    ElevatedButton(onPressed: (){
+                      // Navigator.of(context).push(
+                      //   MaterialPageRoute(builder: (context)=>ScanScreen())
+                      // );
+                    }, child: Text("Scanner un code QR"))
+                  ],
+                ),
+          ],
+        ),
+      ),)
     );
-
-    // return Scaffold(
-    //   appBar: AppBar(
-    //     title: const Text("Billet d'événement"),
-    //     backgroundColor: Colors.blue,
-    //     actions: const <Widget>[],
-    //   ),
-    //   body: Padding(
-    //     padding: const EdgeInsets.all(20.0),
-    //     child: Center(
-    //       child: Column(
-    //         children: [
-    //           TicketWidget(
-    //             width: 250,
-    //             height: 400,
-    //             isCornerRounded: true,
-    //             child: Stack(
-    //               children: [
-    //                 Positioned(
-    //                   top: 0,
-    //                   right: 20,
-    //                   child: Container(
-    //                     height: 50,
-    //                     width: 28,
-    //                     alignment: Alignment.center,
-    //                     color: const Color(0xFFFFFF40),
-    //                     child: Text(
-    //                       '${widget.event.price}',
-    //                       style: const TextStyle(
-    //                         color: Color(0xFF252323),
-    //                         fontSize: 10,
-    //                       ),
-    //                     ),
-    //                   ),
-    //                 ),
-    //                 Column(
-    //                   children: [
-    //                      CircleAvatar(
-    //                       backgroundColor: const Color(0xFFFFFF40),
-    //                       radius: 60,
-    //                       child: CircleAvatar(
-    //                         backgroundColor: Colors.white,
-    //                         radius: 55,
-    //                         backgroundImage: AssetImage(widget.event.imageUrl),
-    //                       ),
-    //                     ),
-    //                     Text(
-    //                       widget.event.name,
-    //                       style: const TextStyle(
-    //                         color: Color(0xFFFFFF40),
-    //                         fontWeight: FontWeight.bold,
-    //                       ),
-    //                     ),
-    //                     Row(
-    //                       mainAxisAlignment: MainAxisAlignment.center,
-    //                       children: [
-    //                         const Icon(Icons.location_on,
-    //                             color: Color(0xFFFFFF40), size: 18),
-    //                         Text(
-    //                           widget.event.location,
-    //                           style: const TextStyle(
-    //                             color: Color(0xFF252323),
-    //                           ),
-    //                         ),
-    //                         Column(
-    //                           crossAxisAlignment: CrossAxisAlignment.stretch,
-    //                           mainAxisAlignment: MainAxisAlignment.center,
-    //                           children: <Widget>[
-    //                             QrImageView(
-    //                               //place where the QR Image will be shown
-    //                               data: qrData,
-    //                               version: QrVersions.auto,
-    //                               size: 200,
-    //                             ),
-    //                             const SizedBox(
-    //                               height: 40.0,
-    //                             ),
-    //                             const Text(
-    //                               "New QR Link Generator",
-    //                               style: TextStyle(fontSize: 20.0),
-    //                             ),
-    //                             TextField(
-    //                               controller:
-    //                                   TextEditingController(text: qrData),
-    //                               enabled: false, // Disable editing
-    //                             ),
-    //                           ],
-    //                         ),
-    //                       ],
-    //                     ),
-    //                   ],
-    //                 )
-    //               ],
-    //             ),
-    //           ),
-    //         ],
-    //       ),
-    //     ),
-    //   ),
-    // );
   }
 }
 
 
 
 
-
-
-
-
-            //TextField(
-            //   controller: qrdataFeed,
-            //   decoration: const InputDecoration(
-            //     hintText: "Input your link or data",
-            //   ),
-            // ),
-            // Padding(
-            //   padding: const EdgeInsets.fromLTRB(40, 20, 40, 0),
-            //   child: DefaultButton(
-            //     onPressed: () async {
-            //       if (qrdataFeed.text.isEmpty) {
-            //         //a little validation for the textfield
-            //         setState(() {
-            //           qrData = "";
-            //         });
-            //       } else {
-            //         setState(() {
-            //           qrData = qrdataFeed.text;
-            //         });
-            //       }
-            //     },
-            //     child: const Text(
-            //       "Generate QR",
-            //       style: TextStyle(
-            //           color: Colors.blue, fontWeight: FontWeight.bold),
-            //     ),
-            //   ),
-            // )

@@ -1,8 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:eventflow/Model/event.dart';
+import 'package:eventflow/Screens/Bienvenu/passageAuPayement.dart';
+// import 'package:eventflow/Screens/Bienvenu/paymentWithKKIAPAY.dart';
 import 'package:flutter/material.dart';
 // import 'package:eventflow/Screens/deodat/screens/events.dart';
-import 'package:eventflow/Model/event.dart';
-
-
 //import 'package:event_flow/widgets/default_button.dart';
 import 'package:eventflow/Screens/deodat/screens/ticket_qr.dart';
 
@@ -46,7 +47,7 @@ class _PaymentValidationState extends State<PaymentValidation> {
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       fit: BoxFit.cover,
-                      image: AssetImage(widget.event.imageUrl),
+                      image: NetworkImage(widget.event.imageUrl),
                     ),
                   ),
                 ),
@@ -63,7 +64,7 @@ class _PaymentValidationState extends State<PaymentValidation> {
                           radius: 32,
                           backgroundColor: const Color(0xFFFFFF40),
                           child: Text(
-                            '${widget.event.price}',
+                            '${widget.event.price} XOF',
                             textAlign: TextAlign.center,
                             style: const TextStyle(
                               color: Color(0xFF252323),
@@ -203,7 +204,7 @@ class _PaymentValidationState extends State<PaymentValidation> {
               ),
             ),
             const SizedBox(height: 16),
-            SizedBox(
+                  SizedBox(
               width: double.infinity,
               child: Material(
                 color: const Color(0xFFFFFF40),
@@ -220,19 +221,107 @@ class _PaymentValidationState extends State<PaymentValidation> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => TicketQRPage(
-                          event: widget.event,
-                          eventTitle: widget.event.name,
-                        ),
+                        builder: (context) => PassageAuPayement(),
                       ),
                     );
                   },
                 ),
               ),
             ),
+            // SizedBox(
+            //   width: double.infinity,
+            //   child: Material(
+            //     color: const Color(0xFFFFFF40),
+            //     child: MaterialButton(
+            //       child: const Text(
+            //         'Valider paiement',
+            //         textAlign: TextAlign.center,
+            //         style: TextStyle(
+            //           color: Color(0xFF252323),
+            //           fontSize: 18,
+            //         ),
+            //       ),
+            //       onPressed: () {
+            //         // Navigator.push(
+            //         //   context,
+            //         //   MaterialPageRoute(
+            //         //     builder: (context) => TicketQRPage(
+            //         //       event: widget.event,
+            //         //       eventTitle: widget.event.name,
+            //         //     ),
+            //         //   ),
+            //         // );
+            //         Navigator.push(
+            //           context,
+            //           MaterialPageRoute(
+            //             builder: (context) => KkiapaySample(),
+            //           ),
+            //         );
+            //       },
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       ),
     );
   }
 }
+
+
+
+// import 'package:flutter/material.dart';
+// import 'package:kkiapay_flutter_sdk/src/widget_builder_view.dart';
+// import 'package:kkiapay_flutter_sdk/utils/config.dart';
+// import "package:eventflow/Screens/Bienvenu/paymentSuccess.dart";
+
+// class PaymentValidation extends StatefulWidget {
+//   final Event event;
+//   const PaymentValidation({super.key, required this.event});
+
+//   @override
+//   _PaymentValidationState createState() => _PaymentValidationState();
+// }
+
+// class _PaymentValidationState extends State<PaymentValidation> {
+//   int numberOfTickets = 1;
+//   late int totalAmount;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     totalAmount = (widget.event.price * numberOfTickets) as int;
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       // ... (le reste de votre code reste inchangé)
+//       SizedBox(
+//         width: double.infinity,
+//         child: Material(
+//           color: const Color(0xFFFFFF40),
+//           child: MaterialButton(
+//             child: const Text(
+//               'Valider paiement',
+//               textAlign: TextAlign.center,
+//               style: TextStyle(
+//                 color: Color(0xFF252323),
+//                 fontSize: 18,
+//               ),
+//             ),
+//             onPressed: () {
+//               Navigator.push(
+//                 context,
+//                 MaterialPageRoute(
+//                   builder: (context) => KkiapaySample(kkiapay: kkiapay),
+//                 ),
+//               );
+//             },
+//           ),
+//         ),
+//       ),
+//       // ... (le reste de votre code reste inchangé)
+//     );
+//   }
+// }
