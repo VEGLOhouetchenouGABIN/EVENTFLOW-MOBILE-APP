@@ -124,7 +124,7 @@ class _SplashScreenState extends State<SplashScreen> {
       } else {
         // User is not signed in, show the login page
         Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) => const Bienvenu1(),
+          builder: (context) => const Bienvenu2(),
         ));
       }
     });
