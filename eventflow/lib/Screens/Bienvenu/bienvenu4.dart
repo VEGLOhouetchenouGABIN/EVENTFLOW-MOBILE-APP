@@ -1,12 +1,17 @@
-// import 'package:eventflow/Screens/deodat/screens/events.dart';
+// ignore_for_file: no_leading_underscores_for_local_identifiers
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:eventflow/Screens/Bienvenu/bienvenu2.dart';
+import 'package:eventflow/Screens/admin/homepageadmin.dart';
+import 'package:eventflow/Screens/organizators/homepageorganizer.dart';
+import 'package:eventflow/Screens/user/homepageuser.dart';
+import 'package:eventflow/Services/auth_Service.dart';
+import 'package:eventflow/main.dart';
 import 'package:flutter/material.dart';
 import 'package:eventflow/controller/google_sign_in.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-// import 'package:eventflow/Screens/deodat/screens/home_page.dart';
-import 'package:eventflow/Screens/Bienvenu/goToListEvents.dart';
-import 'package:eventflow/Screens/Bienvenu/eventDisplay.dart';
+
 
 
 
@@ -20,6 +25,8 @@ class Bienvenu4 extends StatefulWidget {
 }
 
 class _Bienvenu4State extends State<Bienvenu4> {
+
+  
   
   @override
   Widget build(BuildContext context) {
@@ -38,16 +45,16 @@ class _Bienvenu4State extends State<Bienvenu4> {
                   children: [
                     Container(
 
-                      child: Image.asset("assets/Festival 1.png", width: screenWidth,height: 500, fit: BoxFit.cover),
+                      child: Image.asset("assets/Festival 1.png", width: screenWidth,height: 350, fit: BoxFit.cover),
                     ),
                     Container(
                       child: Column(
                           children: [
                             SizedBox(height: 10,),
                             Text("EVENTFLOW",style: TextStyle(color: Colors.yellow, fontSize: 35,fontWeight: FontWeight.bold),),
-                            SizedBox(height: 30,),
+                            SizedBox(height: 20,),
                             Text("Bienvenue sur EventFlow", style: TextStyle(color: Colors.white,fontSize: 20,fontWeight: FontWeight.bold),),
-                            SizedBox(height: 30,),
+                            SizedBox(height: 10,),
                             ElevatedButton.icon(
                               style: ButtonStyle(
                               side: MaterialStateProperty.all<BorderSide>(
@@ -60,12 +67,52 @@ class _Bienvenu4State extends State<Bienvenu4> {
                                 Colors.black, // Specify the background color
                               ),
                             ),
-                                onPressed:() {
+                                onPressed:() async {
                                   final provider = Provider.of<GoogleSignInProvider>(context, listen: false);
-                                  provider.googleLogin();
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(builder: (context)=> EventScreen())
-                                  );
+                                  await provider.googleLogin();
+                                  // Navigator.of(context).push(
+                                  //   MaterialPageRoute(builder: (context)=> MyApp())
+                                  // );
+
+                                  final AuthService _authService = AuthService();
+
+                                  final FirestoreService _firestoreService = FirestoreService();
+                                  DocumentSnapshot? isAdmin = await _firestoreService.getAdminByUserID("userId", _authService.currentUser!.uid);
+                                  DocumentSnapshot? isOrganizer = await _firestoreService.getOrganizerByUserID("userId", _authService.currentUser!.uid);
+
+
+
+
+                                  if (_authService.currentUser != null) {
+                                    
+                                 if(isAdmin!=null){
+
+                                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                                    builder: (context) => const HomeScreenAdmin(),
+                                  ));
+                                  }
+                                  else if(isOrganizer!=null){
+                                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                                    builder: (context) => const HomeScreenOrganizer(),
+                                  ));
+                                  }
+                                  else{
+                                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                                    builder: (context) => const HomeScreenUser(),
+                                  ));
+                                  }
+                                } else {
+                                  // User is not signed in, show the login page
+                                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                                    builder: (context) => const Bienvenu2(),
+                                  ));
+                                }
+
+
+
+
+
+
                                   
                                   // Navigator.of(context).push(
                                   //   MaterialPageRoute(builder: (context)=> EventScreen())
@@ -73,9 +120,9 @@ class _Bienvenu4State extends State<Bienvenu4> {
                                 },
 
                                 icon: FaIcon(FontAwesomeIcons.google),
-                                label: Text("Voir la liste des évènements", style: TextStyle(color: Colors.white, fontSize: 18)),
+                                label: Text("Continuez avec google", style: TextStyle(color: Colors.white, fontSize: 18)),
                             ),
-                            SizedBox(height: 20,),
+                            SizedBox(height: 10,),
                           ]),
 
                     )

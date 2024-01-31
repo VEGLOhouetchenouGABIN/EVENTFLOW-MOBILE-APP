@@ -2,28 +2,25 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eventflow/Screens/Bienvenu/createEvenement.dart';
 import 'package:eventflow/Screens/Bienvenu/scanQR.dart';
-import 'package:eventflow/Screens/admin/eventNotValidated.dart';
-import 'package:eventflow/Screens/admin/users.dart';
+import 'package:eventflow/Screens/admin/createAdmin.dart';
 import 'package:eventflow/Services/auth_Service.dart';
 import 'package:eventflow/main.dart';
 import 'package:flutter/material.dart';
 
-//import 'CreateOrg.dart';
 
-
-
-class AdminPage extends StatefulWidget {
-  AdminPage({ super.key});
+class OrgPage extends StatefulWidget {
+ 
+  OrgPage({ super.key});
 
   @override
-  State<AdminPage> createState() => _AdminPageState();
+  State<OrgPage> createState() => _OrgPageState();
 }
 
-class _AdminPageState extends State<AdminPage> {
+class _OrgPageState extends State<OrgPage> {
 
-late AuthService _authService;
+ late AuthService _authService;
   late FirestoreService _firestoreService;
-  DocumentSnapshot<Object?>? _admin; // Change this to DocumentSnapshot<Object?>?
+  DocumentSnapshot<Object?>? _organisateur; // Change this to DocumentSnapshot<Object?>?
 
   @override
   void initState() {
@@ -34,14 +31,25 @@ late AuthService _authService;
   }
 
   Future<void> _initializeAdmin() async {
-    _admin = await _firestoreService.getAdminByUserID("userId", _authService.currentUser!.uid);
+    _organisateur = await _firestoreService.getOrganizerByUserID("userId", _authService.currentUser!.uid);
     setState(() {
       // Update state variables here
     });
   }
   
 
- 
+  int _selectedIndex=0;
+
+  void _redirectPage(int index){
+    /*Doit rediriger sur une page en fonction de l'index
+    Exemple:
+    if(index==0){
+      Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context)=>CreateOrg())
+       );
+      }*/
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +57,7 @@ late AuthService _authService;
         debugShowCheckedModeBanner: false,
         theme: ThemeData.dark(),
         home: Scaffold(
-          // appBar: AppBar(),
+          appBar: AppBar(),
           body: SingleChildScrollView(
               child: Column(
             children: [
@@ -61,12 +69,11 @@ late AuthService _authService;
               const SizedBox(
                 height: 20.0,
               ),
-              
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   RichText(
-                      text: _admin != null && _admin!.exists
+                       text: _organisateur != null && _organisateur!.exists
                       ? TextSpan(
                           style: const TextStyle(
                             color: Colors.white,
@@ -74,9 +81,10 @@ late AuthService _authService;
                           ),
                           children: [
                             TextSpan(
-                              text: "${(_admin!.data() as Map<String, dynamic>?)?['username'] ?? 'N/A'}\n",
+                              text: "${(_organisateur!.data() as Map<String, dynamic>?)?['username'] ?? 'N/A'}\n",
                               // Replace 'username' with the actual attribute name
                             ),
+                            
                           ],
                         )
                       : TextSpan(
@@ -88,12 +96,6 @@ late AuthService _authService;
               SizedBox(
                 height: 10.0,
               ),
-
-
-
-
-
-
               Padding(
               padding: EdgeInsets.all(10.0),
               child: Row(
@@ -138,8 +140,8 @@ late AuthService _authService;
                         Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => EventToValidate()));
-                        
+                                  builder: (context) => CreateAdmin()))
+                        ;
                       },
                       style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all<Color>(
@@ -162,7 +164,7 @@ late AuthService _authService;
                           Icon(
                             Icons.event,
                           ),
-                          Text("Valider les évènements"),
+                          Text("Dévenir administrateur"),
                         ],
                       ),
                     ),
@@ -170,17 +172,10 @@ late AuthService _authService;
                 ],
               ),
             ),
-
-             SizedBox(
-                height: 10.0,
+              const SizedBox(
+                height: 10,
               ),
-
-
-
-
-
-
-              Padding(
+               Padding(
               padding: EdgeInsets.all(10.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Alignement des boutons sur l'horizontal
@@ -221,11 +216,11 @@ late AuthService _authService;
                   Expanded( // Pour que le bouton s'adapte à la largeur de l'écran
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.push(
+                        /*Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => UserListScreen()));
-                        
+                                  builder: (context) => ListEvent()))*/
+                        ;
                       },
                       style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all<Color>(
@@ -248,7 +243,7 @@ late AuthService _authService;
                           Icon(
                             Icons.event,
                           ),
-                          Text("Votre Profil User"),
+                          Text("Mes événements"),
                         ],
                       ),
                     ),
@@ -256,9 +251,101 @@ late AuthService _authService;
                 ],
               ),
             ),
-              const SizedBox(
+
+
+
+
+
+            // const SizedBox(
+            //     height: 10,
+            //   ),
+
+
+
+
+
+            //  Padding(
+            //   padding: EdgeInsets.all(10.0),
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Alignement des boutons sur l'horizontal
+            //     children: <Widget>[
+            //       Expanded( // Pour que le bouton s'adapte à la largeur de l'écran
+            //         child: ElevatedButton(
+            //           onPressed: () {
+            //             // Navigator.push(
+            //             //     context,
+            //             //     MaterialPageRoute(
+            //             //         builder: (context) => CreateEvent()));
+            //           },
+            //           style: ButtonStyle(
+            //             backgroundColor: MaterialStateProperty.all<Color>(
+            //                 Colors.yellow), // Couleur du bouton
+            //             foregroundColor: MaterialStateProperty.all<Color>(
+            //                 Colors.black), // Couleur du texte
+            //             padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+            //               EdgeInsets.symmetric(
+            //                   horizontal: 10.0, vertical: 10.0),
+            //             ), // Espacement interne
+            //             shape: MaterialStateProperty.all<OutlinedBorder>(
+            //               RoundedRectangleBorder(
+            //                 borderRadius:
+            //                     BorderRadius.circular(10.0), // Bordure arrondie
+            //               ),
+            //             ),
+            //           ),
+            //           child: Column(children: [
+            //             Icon(Icons.add),
+            //             Text("Créer un événement"),
+            //           ]),
+            //         ),
+            //       ),
+            //       SizedBox(
+            //         width: 20.0,
+            //       ),
+            //       Expanded( // Pour que le bouton s'adapte à la largeur de l'écran
+            //         child: ElevatedButton(
+            //           onPressed: () {
+            //             /*Navigator.push(
+            //                   context,
+            //                   MaterialPageRoute(
+            //                       builder: (context) => ListEvent()))*/
+            //             ;
+            //           },
+            //           style: ButtonStyle(
+            //             backgroundColor: MaterialStateProperty.all<Color>(
+            //                 Colors.yellow), // Couleur du bouton
+            //             foregroundColor: MaterialStateProperty.all<Color>(
+            //                 Colors.black), // Couleur du texte
+            //             padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+            //               EdgeInsets.symmetric(
+            //                   horizontal: 10.0, vertical: 10.0),
+            //             ), // Espacement interne
+            //             shape: MaterialStateProperty.all<OutlinedBorder>(
+            //               RoundedRectangleBorder(
+            //                 borderRadius:
+            //                     BorderRadius.circular(10.0), // Bordure arrondie
+            //               ),
+            //             ),
+            //           ),
+            //           child: Column(
+            //             children: [
+            //               Icon(
+            //                 Icons.event,
+            //               ),
+            //               Text("Mes événements"),
+            //             ],
+            //           ),
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
+
+
+          const SizedBox(
                 height: 10,
               ),
+
 
             // Deconnexion
 
@@ -297,10 +384,10 @@ late AuthService _authService;
               ),
             ),
           ),
-
               ]
              ),
            ),
+          
           ),
       );
    }

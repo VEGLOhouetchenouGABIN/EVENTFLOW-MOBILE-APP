@@ -1,13 +1,15 @@
-import 'package:eventflow/Screens/deodat/screens/PaymentValidation.dart';
-// import 'package:eventflow/Screens/deodat/screens/events.dart';
+
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:eventflow/Model/event.dart';
 
 import 'package:flutter/material.dart';
 
-class EventDetailsPage extends StatelessWidget {
-  final Event event;
 
-  const EventDetailsPage({super.key, required this.event});
+class EventOrganizerDetailsPage extends StatelessWidget {
+  final Event  event;
+
+  const EventOrganizerDetailsPage({super.key, required this.event});
 
   @override
   Widget build(BuildContext context) {
@@ -32,11 +34,11 @@ class EventDetailsPage extends StatelessWidget {
                 children: [
                   Container(
                     decoration: BoxDecoration(
-                      image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: AssetImage(event.imageUrl),
-                      ),
+                    image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: NetworkImage(event.imageUrl),
                     ),
+                  ),
                   ),
                   Positioned(
                     right: 10,
@@ -47,10 +49,7 @@ class EventDetailsPage extends StatelessWidget {
                       children: [
                         ClipRRect(
                           borderRadius: BorderRadius.circular(
-                              16), // Ajustez la valeur pour définir le rayon des coins
-                          //child:  CircleAvatar(
-                            // radius: 32,
-                            // backgroundColor: Color.fromARGB(255, 19, 14, 14),
+                              16), 
                             child: Text(
                               '${event.price} XOF',
                               textAlign: TextAlign.center,
@@ -111,11 +110,7 @@ class EventDetailsPage extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        '${event.participants} Participants',
-                        style:
-                            const TextStyle(fontSize: 15, color: Colors.white),
-                      ),
+                     
                       Text(
                         '${event.time} heures',
                         style:
@@ -137,31 +132,7 @@ class EventDetailsPage extends StatelessWidget {
                     style: const TextStyle(fontSize: 15, color: Colors.white),
                   ),
                   const SizedBox(height: 20),
-                  SizedBox(
-                    width: double.infinity,
-                    child: Material(
-                      color: const Color(0xFFFFFF40),
-                      child: MaterialButton(
-                        child: const Text(
-                          'Acheter TICKET',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Color(0xFF252323),
-                            fontSize: 18,
-                          ),
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  PaymentValidation(event: event),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
+                  
                 ],
               ),
             ),
@@ -171,66 +142,4 @@ class EventDetailsPage extends StatelessWidget {
     );
   }
 }
-      /*
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Image.asset(
-                event.imageUrl), // Affichez l'image de l'événement en grand
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    event.name,
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Type d\'événement: ${event.eventType}',
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  Text(
-                    'Date: ${event.date}',
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => TicketQRPage(
-                             event: event,
-                            eventTitle: event.name,
-                            reservationNumber: '123456',
-                          ),
-                        ),
-                      );
-                    },
-                    child: const Text('Valider paiement'),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                        Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const ScanScreen(),
-                        ),
-                      );
-                    },
-                    child: const Text('Scan Qr Code'),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        */
+     

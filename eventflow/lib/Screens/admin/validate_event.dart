@@ -1,31 +1,72 @@
 
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:eventflow/Model/event.dart';
-// import 'package:eventflow/Screens/deodat/screens/PaymentValidation.dart';
-
-import 'package:eventflow/Screens/Bienvenu/paymentValidation.dart';
+import 'package:eventflow/Screens/Bienvenu/notifications.dart';
 import 'package:eventflow/widgets/deodat/widgets/notification_provider.dart';
-import 'package:eventflow/widgets/deodat/widgets/welcome_notification.dart';
+
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class EventDetailsPage extends StatelessWidget {
+class ValidateEvent extends StatelessWidget {
   final Event  event;
 
-  const EventDetailsPage({super.key, required this.event});
+  const ValidateEvent({super.key, required this.event});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF252323),
       appBar: AppBar(
-        title: const Text(
-          'Détails de l\'événement',
-          style:
-              TextStyle(color: Color(0xFF252323), fontWeight: FontWeight.bold),
-        ),
+        title: const Text("Valider à évènements"),
+        backgroundColor: Colors.blue,
+
+
+
+
+         actions: [
+          Stack(
+            children: [
+              IconButton(
+                icon: const Icon(
+                  Icons.notifications,
+                  color:  Color(0xFF252323),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const PageNotification()),
+                  );
+                  Provider.of<NotificationProvider>(context, listen: false)
+                      .marquerToutesCommeLues();
+                },
+              ),
+              if (Provider.of<NotificationProvider>(context)
+                      .nombreNotificationsNonLues >
+                  0)
+                Positioned(
+                  right: 0,
+                  child: CircleAvatar(
+                    backgroundColor: Colors.red,
+                    radius: 10,
+                    child: Text(
+                      Provider.of<NotificationProvider>(context)
+                          .nombreNotificationsNonLues
+                          .toString(),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ],
+
+
+
+
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -54,7 +95,7 @@ class EventDetailsPage extends StatelessWidget {
                       children: [
                         ClipRRect(
                           borderRadius: BorderRadius.circular(
-                              16), 
+                              16),
                             child: Text(
                               '${event.price} XOF',
                               textAlign: TextAlign.center,
@@ -136,33 +177,6 @@ class EventDetailsPage extends StatelessWidget {
                     style: const TextStyle(fontSize: 15, color: Colors.white),
                   ),
                   const SizedBox(height: 20),
-                  SizedBox(
-                    width: double.infinity,
-                    child: Material(
-                      color: const Color(0xFFFFFF40),
-                      child: MaterialButton(
-                        child: const Text(
-                          'Acheter TICKET',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Color(0xFF252323),
-                            fontSize: 18,
-                          ),
-                        ),
-                        onPressed: ()async {
-                      //  // Define the welcomeNotifications list
-                    
-                         await Navigator.push(
-                           context,
-                           MaterialPageRoute(
-                             builder: (context) =>
-                                 PaymentValidation(event: event),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),

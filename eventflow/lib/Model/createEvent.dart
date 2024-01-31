@@ -1,12 +1,10 @@
-// import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-// import 'package:cloud_firestore/cloud_firestore.dart';
+
 
 
 
@@ -56,10 +54,12 @@ Future<String> saveData({
   required String date, 
   required String location, 
   required String time, 
-  required participants, 
   required about, 
   required int price,
-  required country
+  required country,
+  required organizer,
+  required validated,
+  required userId
   })async{
 
     String  resp="Some Error Occured";
@@ -67,12 +67,8 @@ Future<String> saveData({
   try{
 
     String imageUrl = await uploadImageToStorage(file);
-
-    print("Just a test");
-
-    print(imageUrl);
-
-    print("End of the test");
+     String key = DateTime.now().millisecondsSinceEpoch.toString() +
+      Random().nextInt(99999999).toString();
 
     await _firestore.collection("events").add({
       'name' : name,
@@ -81,10 +77,13 @@ Future<String> saveData({
       'date': date,
       'location' : location,
       'time' : time,
-      'participants' : participants,
       'about' : about,
       'price' :  price,
-      "country": country
+      "country": country,
+      "organizer": organizer,
+      "validated": validated,
+      "key":  key,
+      "userId" : userId
   });
 
   resp = "success";

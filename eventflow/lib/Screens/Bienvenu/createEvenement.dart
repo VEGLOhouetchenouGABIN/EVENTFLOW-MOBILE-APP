@@ -1,17 +1,21 @@
 
 
-//Page de création d'un événement 
-
 // ignore_for_file: prefer_const_constructors, unused_local_variable, prefer_const_literals_to_create_immutables
 
 import 'dart:typed_data';
-import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eventflow/Model/createEvent.dart';
+import 'package:eventflow/Screens/Bienvenu/notifications.dart';
+import 'package:eventflow/Screens/admin/homepageadmin.dart';
+import 'package:eventflow/Screens/organizators/homepageorganizer.dart';
+import 'package:eventflow/Screens/user/homepageuser.dart';
+import 'package:eventflow/Services/auth_Service.dart';
 import 'package:eventflow/Utils/utils.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:eventflow/widgets/deodat/widgets/notification_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 
 class CreateEvent extends StatefulWidget {
@@ -29,12 +33,16 @@ class _CreateEventState extends State<CreateEvent> {
   final TextEditingController locationController = TextEditingController();
   final TextEditingController countryController = TextEditingController();
   final TextEditingController timeController = TextEditingController();
-  final TextEditingController participantsController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
   final TextEditingController aboutController = TextEditingController();
   // TextEditingController _picked = TextEditingController();
   
   late TimeOfDay _timeChosen;
+
+
+  final AuthService _authService = AuthService();
+
+   final FirestoreService _firestoreService = FirestoreService();
 
 
   // TextEditingController dateController = TextEditingController();
@@ -95,7 +103,7 @@ class _CreateEventState extends State<CreateEvent> {
   void _submitForm() async{
 
     
-
+  
    
     if (eventKey.currentState!.validate()) {
       // Form is valid, process the data
@@ -104,41 +112,75 @@ class _CreateEventState extends State<CreateEvent> {
       String eventType = _value;
       String location = locationController.text;
       String time = _timeChosen.format(context).toString();
-      // String price = priceController.text;
+      
       String about = aboutController.text;
-      String participants = participantsController.text;
       String date = dateController.text;
       String country = countryController.text;
       int price = int.tryParse(priceController.text) ?? 0;
-      // TimeOfDay time = _timeChosen;
-    
-
-    // print("Name: $name");
-    // print("Location:  $location");
-    // //  print("ImageUrl: $_imageUrl");
-    // print("Date:  $date");
-    //  print("About: $about");
-    // print("Price:  $price");
-    print(price.runtimeType);
-
-    
-    String resp  = await StoreEvent().saveData(name: name, eventType: eventType, file: _imageUrl!, date: date, location: location,time: time, participants: participants, about: about, price: price, country: country);
-
-  print(resp);
 
 
+       String resp;
+
+
+      DocumentSnapshot? _Admin = await _firestoreService.getAdminByUserID("userId", _authService.currentUser!.uid);
+      DocumentSnapshot? _Organizer = await _firestoreService.getOrganizerByUserID("userId", _authService.currentUser!.uid);
+      String organizer ;
+      
+      if (_Admin != null && _Admin.exists){
+
+      //  organizer =  (_Admin.data() as Map<String, dynamic>)['username'];
+      organizer = _Admin.id;
+       print(organizer);
+
+        resp  = await StoreEvent().saveData(name: name, eventType: eventType, file: _imageUrl!, date: date, location: location,time: time, about: about, price: price, country: country,organizer: organizer,validated: "Yes",userId :_authService.currentUser!.uid );
+      nameController.text="";
+    eventTypeController.text="";
+    locationController.text="";
+    timeController.text="";
+    priceController.text="";
+    aboutController.text="";
+    dateController.text="";
+    countryController.text="";
+    _imageUrl =null;
+    organizer = "";
+
+
+    await Navigator.of(context).push(
+      MaterialPageRoute(builder: (context)=> HomeScreenAdmin())
+    );
+
+
+      }else if(_Organizer!=null){
+
+      // organizer =  (_Organizer.data() as Map<String, dynamic>)['username'];
+      organizer = _Organizer.id;
+      print(organizer);
+
+      resp  = await StoreEvent().saveData(name: name, eventType: eventType, file: _imageUrl!, date: date, location: location,time: time, about: about, price: price, country: country,organizer: organizer,validated: "No",userId :_authService.currentUser!.uid);
     nameController.text="";
     eventTypeController.text="";
     locationController.text="";
     timeController.text="";
     priceController.text="";
     aboutController.text="";
-    participantsController.text="";
     dateController.text="";
     countryController.text="";
     _imageUrl =null;
+    organizer = "";
 
-    
+
+    await Navigator.of(context).push(
+      MaterialPageRoute(builder: (context)=> HomeScreenOrganizer())
+    );
+
+
+      }
+      else{
+        print("Vous n'avez pas les droits nécessaires pour créer un évènement. Veillez créer un compte organisateur ou contacter un administrateur!");
+        await Navigator.of(context).push(
+        MaterialPageRoute(builder: (context)=> HomeScreenUser())
+    );
+      }
     }
 
     else{
@@ -154,13 +196,59 @@ var _value = null;
   
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData.dark(),
-      home: Scaffold(
-          appBar: AppBar(
-            title: Text("Créer un événement"),
+    return Scaffold(
+         appBar: AppBar(
+        title: const Text("Espace creer évènement"),
+        backgroundColor: Colors.blue,
+
+
+
+
+         actions: [
+          Stack(
+            children: [
+              IconButton(
+                icon: const Icon(
+                  Icons.notifications,
+                  color:  Color(0xFF252323),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const PageNotification()),
+                  );
+                  Provider.of<NotificationProvider>(context, listen: false)
+                      .marquerToutesCommeLues();
+                },
+              ),
+              if (Provider.of<NotificationProvider>(context)
+                      .nombreNotificationsNonLues >
+                  0)
+                Positioned(
+                  right: 0,
+                  child: CircleAvatar(
+                    backgroundColor: Colors.red,
+                    radius: 10,
+                    child: Text(
+                      Provider.of<NotificationProvider>(context)
+                          .nombreNotificationsNonLues
+                          .toString(),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
           ),
+        ],
+
+
+
+
+      ),
           body: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -256,13 +344,6 @@ var _value = null;
                         });
                       }
                       ),
-    
-                    // TextFormField(
-                    //   keyboardType: TextInputType.text,
-                    //   controller: eventTypeController,
-                    //   decoration: InputDecoration(labelText: "Type de l'évènement"),
-                    //   validator: _validateRequired,
-                    // ),
                     const SizedBox(height: 18.0),
                     TextFormField(
                       keyboardType: TextInputType.text,
@@ -312,34 +393,10 @@ var _value = null;
                       ),
                       validator: _validateRequired,
                     ),
-
-                  //  SizedBox(width: 18.0),
-                  //   TextFormField(
-                  //     keyboardType: TextInputType.text,
-                  //     controller: timeController,
-                  //     decoration: InputDecoration(labelText: "L'heure"),
-                  //     validator: _validateRequired,
-                  //   ),
-
                     SizedBox(height: 18.0),
                     TextFormField(
                       keyboardType: TextInputType.text,
-                      controller: participantsController,
-                      // decoration: InputDecoration(labelText: "Participants"),
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(width: 2)
-                        ),
-                        labelText: "Participants"
-                      ),
-                      validator: _validateRequired,
-                    ),
-
-                    SizedBox(width: 18.0),
-                    TextFormField(
-                      keyboardType: TextInputType.text,
                       controller: aboutController,
-                      // decoration: InputDecoration(labelText: "Un petit mot sur l'évènement"),
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
                           borderSide: BorderSide(width: 2)
@@ -353,8 +410,6 @@ var _value = null;
                     TextFormField(
                       keyboardType: TextInputType.number,
                       controller: priceController,
-                      
-                      // decoration: InputDecoration(labelText: "Prix du ticket"),
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
                           borderSide: BorderSide(width: 2)
@@ -393,8 +448,8 @@ var _value = null;
                 ]),)
             ),
           )
-    ),
-    );
+    )
+    ;
   }
 
 
